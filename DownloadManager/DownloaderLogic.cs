@@ -14,8 +14,12 @@ namespace DownloadManager
 
         internal void GetUserInput()
         {
-            Console.Write("Enter the download URL: ");
-            DownloadLink = Console.ReadLine();
+            do
+            {
+                Console.Write("Enter the download URL: ");
+                DownloadLink = Console.ReadLine();
+            } while (DownloadLink.Length == 0 || !Uri.IsWellFormedUriString(DownloadLink, UriKind.Absolute));
+            /*Currently assumes that downoad destination is correct/exists*/
             Console.Write("Enter the download destination: ");
             DownloadDestination = Console.ReadLine();
         }
