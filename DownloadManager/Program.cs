@@ -13,6 +13,7 @@ namespace DownloadManager
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
+ 
         static void Main()
         {
             Application.EnableVisualStyles();
@@ -21,7 +22,10 @@ namespace DownloadManager
 
             DownloaderLogic dl = new DownloaderLogic();
             Console.WriteLine("Beginning download...");
-            dl.Download();
+            Task.Run( async() => {
+                await dl.Download();
+            }).GetAwaiter().GetResult();
+            dl.Pause();
             Console.WriteLine("Download completed.");
         }
     }

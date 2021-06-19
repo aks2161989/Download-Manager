@@ -10,20 +10,28 @@ namespace DownloadManager
 {
 	public class DownloaderLogic
 	{
-		public void Download()
+		public bool IsPaused { get; set; }
+		public bool IsDownloading { get; set; }
+		public DownloaderLogic()
 		{
+			IsPaused = false;
+			IsDownloading = false;
+		}
+		public async Task Download()
+		{
+			IsDownloading = true;
 			DateTime startTime = DateTime.UtcNow;
-			WebRequest request = WebRequest.Create("https://wds.gcdn.co/wgc/releases_tTrHgLCKHBRiaL/wgc_21.03.00.5224_na/world_of_warships_ww_install_na.exe?enctid=cc7lgfnncntt");
+			WebRequest request = WebRequest.Create("https://dl.myabandonware.com/t/n00C5Nqj4U1hgr6nJe7ABc0dr2d9SiX7UkN2t3iIAYGc52jf3X/Man-of-War-II-Chains-of-Command_Win_EN_ISO-Version.zip");
 			WebResponse response = request.GetResponse();
 			using (Stream responseStream = response.GetResponseStream())
 			{
-				using (Stream fileStream = File.OpenWrite(@"f:\\my_downloads\\world_of_warships_ww_install_na.exe"))
+				using (Stream fileStream = File.OpenWrite(@"f:\\my_downloads\\Man-of-War-II-Chains-of-Command_Win_EN_ISO-Version.zip"))
 				{
 					byte[] buffer = new byte[4096];
 					int bytesRead = responseStream.Read(buffer, 0, 4096);
-					while (bytesRead > 0)
+					while (bytesRead > 0 && IsPaused == false)
 					{
-						fileStream.Write(buffer, 0, bytesRead);
+						 await fileStream.WriteAsync(buffer, 0, bytesRead);
 						DateTime nowTime = DateTime.UtcNow;
 						if ((nowTime - startTime).TotalMinutes > 5)
 						{
@@ -32,7 +40,26 @@ namespace DownloadManager
 						}
 						bytesRead = responseStream.Read(buffer, 0, 4096);
 					}
+					IsDownloading = false;
 				}
+			}
+		}
+		public void Pause()
+		{
+			char? input = null;
+			Console.Write("Enter p to pause: ");
+			while (IsDownloading == true && input == null)
+			{
+				input = Console.ReadKey().KeyChar;
+			}
+			if (IsDownloading == false)
+			{
+				return;
+			}
+			if (input == 'p' || input == 'P')
+			{
+				IsPaused = true;
+				Console.WriteLine("Download paused.");
 			}
 		}
 	}
