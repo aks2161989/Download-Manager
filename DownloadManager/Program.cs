@@ -22,10 +22,13 @@ namespace DownloadManager
 
             DownloaderLogic dl = new DownloaderLogic();
             Console.WriteLine("Beginning download...");
-            Task.Run( async() => {
-                await dl.Download();
-            }).GetAwaiter().GetResult();
-            dl.Pause();
+            Task downloaderTask = Task.Run( () => {
+                dl.Download();
+            });
+            Task pausingTask = Task.Run(() => {
+                dl.Pause();
+            });
+            Task.WaitAll(downloaderTask, pausingTask);
             Console.WriteLine("Download completed.");
         }
     }

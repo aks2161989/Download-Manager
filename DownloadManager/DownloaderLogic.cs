@@ -17,11 +17,11 @@ namespace DownloadManager
 			IsPaused = false;
 			IsDownloading = false;
 		}
-		public async Task Download()
+		public void Download()
 		{
 			IsDownloading = true;
 			DateTime startTime = DateTime.UtcNow;
-			WebRequest request = WebRequest.Create("https://dl.myabandonware.com/t/n00C5Nqj4U1hgr6nJe7ABc0dr2d9SiX7UkN2t3iIAYGc52jf3X/Man-of-War-II-Chains-of-Command_Win_EN_ISO-Version.zip");
+			WebRequest request = WebRequest.Create("https://dl.myabandonware.com/t/SCW4tNnUIXwjWowiRg8FXwu4Y3cXYAOB7E0o3ZznV0xKqWjztV/Man-of-War-II-Chains-of-Command_Win_EN_ISO-Version.zip");
 			WebResponse response = request.GetResponse();
 			using (Stream responseStream = response.GetResponseStream())
 			{
@@ -31,7 +31,7 @@ namespace DownloadManager
 					int bytesRead = responseStream.Read(buffer, 0, 4096);
 					while (bytesRead > 0 && IsPaused == false)
 					{
-						 await fileStream.WriteAsync(buffer, 0, bytesRead);
+						 fileStream.WriteAsync(buffer, 0, bytesRead);
 						DateTime nowTime = DateTime.UtcNow;
 						if ((nowTime - startTime).TotalMinutes > 5)
 						{
